@@ -18,9 +18,10 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onSuccess?: (info: TicketSuccessInfo) => void;
+  config?: any;
 };
 
-export function TicketModal({ open, onClose, onSuccess }: Props) {
+export function TicketModal({ open, onClose, onSuccess, config }: Props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -107,12 +108,15 @@ export function TicketModal({ open, onClose, onSuccess }: Props) {
     setError(null);
     setSubmitting(true);
     try {
-      const result = await submitTicket({
-        title: title.trim(),
-        description: description.trim(),
-        images,
-        video,
-      });
+      const result = await submitTicket(
+        {
+          title: title.trim(),
+          description: description.trim(),
+          images,
+          video,
+        },
+        config
+      );
       if (result.success) {
         setSuccess(true);
         console.log('Ticket submitted successfully');
@@ -141,7 +145,7 @@ export function TicketModal({ open, onClose, onSuccess }: Props) {
     } finally {
       setSubmitting(false);
     }
-  }, [title, description, images, video, onClose, onSuccess]);
+  }, [title, description, images, video, onClose, onSuccess, config]);
 
   const handleClose = useCallback(() => {
     if (!submitting) onClose();

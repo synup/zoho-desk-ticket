@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zoho Widget Test</title>
+  </head>
+
+  <body>
+    <h1>Host App Simulation</h1>
+
+    <button onclick="simulateConsole()">Generate Console Log</button>
+    <button onclick="simulateError()">Generate Error</button>
+    <button onclick="simulateNetwork()">Make Network Call</button>
+
+    <script src="./dist/ticket-widget.js"></script>
+
+    <script>
+      // simulate host app behaviour
+
+      function simulateConsole() {
+        console.log("Host App Log");
+        console.warn("Host Warning");
+      }
+
+      function simulateError() {
+        throw new Error("Host App Runtime Error");
+      }
+
+      function simulateNetwork() {
+        fetch("https://jsonplaceholder.typicode.com/posts/1")
+          .then(r => r.json())
+          .then(d => console.log("Network response", d));
+      }
+
+      // initialize widget
+
+      TicketWidget.init({
+        apiBaseUrl: "http://localhost:3001",
+        customer: {
+          name: "Faiz Test",
+          email: "faiz@test.com"
+        }
+      });
+    </script>
+
+  </body>
+</html>

@@ -12,7 +12,9 @@ import { getNetworkLogs } from './networkLogger';
 import { getErrorLogs } from './errorLogger';
 import { getEnvironmentInfo } from './environmentLogger';
 
-const API_BASE = import.meta.env.VITE_ZOHO_API_BASE ?? '';
+function getApiBase(config?: any) {
+  return config?.apiBaseUrl || import.meta.env.VITE_ZOHO_API_BASE || 'https://zoho-desk-api.dev5-1.stg.synup.com';
+}
 
 export type TicketPayload = {
   title: string;
@@ -49,14 +51,19 @@ function buildLogsFile(payload: LogsPayload): File {
 async function submitToZohoDesk(
   subject: string,
   description: string,
-  files: File[]
+  files: File[],
+  config?: any
 ): Promise<{ ticketId: string }> {
-  const url = `${API_BASE}/api/zoho/tickets`;
+  const apiBase = getApiBase(config);
+  const url = `${apiBase}/api/zoho/tickets`;
   console.log('[SubmitTicket] Request', { url, method: 'POST', subject: subject.slice(0, 50), fileCount: files.length, fileNames: files.map((f) => f.name) });
 
   const form = new FormData();
   form.append('subject', subject);
   form.append('description', description);
+  if (config?.customer) {
+    form.append('customer', JSON.stringify(config.customer));
+  }
   files.forEach((f) => form.append('files', f, f.name));
 
   const res = await fetch(url, {
@@ -78,7 +85,7 @@ async function submitToZohoDesk(
   return { ticketId };
 }
 
-export async function submitTicket(payload: TicketPayload): Promise<SubmitResult> {
+export async function submitTicket(payload: TicketPayload, config?: any): Promise<SubmitResult> {
   console.log('[SubmitTicket] Start', { title: payload.title?.slice(0, 50), imageCount: payload.images.length, hasVideo: !!payload.video });
 
   const imageFiles = payload.images.filter((f) => f.type.startsWith('image/'));
@@ -108,7 +115,8 @@ export async function submitTicket(payload: TicketPayload): Promise<SubmitResult
     const result = await submitToZohoDesk(
       payload.title.trim(),
       payload.description.trim(),
-      files
+      files,
+      config
     );
     ticketId = result.ticketId;
   } catch (e) {

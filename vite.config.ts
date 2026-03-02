@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
-// https://vite.dev/config/
 export default defineConfig({
   server: {
     proxy: {
@@ -10,9 +10,24 @@ export default defineConfig({
   },
   plugins: [
     react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
-      },
+      jsxRuntime: "automatic"
     }),
+    cssInjectedByJsPlugin(),
   ],
+  define: {
+    'process.env.NODE_ENV': '"production"',
+  },
+  build: {
+    lib: {
+      entry: "src/widget.tsx",
+      name: "TicketWidget",
+      fileName: () => "ticket-widget.js",
+      formats: ["iife"],
+    },
+    rollupOptions: {
+      output: {
+        inlineDynamicImports: true,
+      },
+    },
+  },
 })

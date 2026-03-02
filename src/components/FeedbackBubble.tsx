@@ -6,9 +6,10 @@ import './FeedbackBubble.css';
 
 type Props = {
   onTicketSuccess?: (info: TicketSuccessInfo) => void;
+  config?: any;
 };
 
-export function FeedbackBubble({ onTicketSuccess }: Props) {
+export function FeedbackBubble({ onTicketSuccess, config }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -25,6 +26,7 @@ export function FeedbackBubble({ onTicketSuccess }: Props) {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSuccess={onTicketSuccess}
+        config={config}
       />
     </>
   );
