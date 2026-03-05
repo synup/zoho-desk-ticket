@@ -42,13 +42,12 @@ async function getAccessToken() {
     );
   }
 
-  const scope =
-    'Desk.tickets.CREATE Desk.tickets.READ Desk.tickets.UPDATE Desk.contacts.READ Desk.contacts.CREATE';
+  
   const url = `${ZOHO_ACCOUNTS}/oauth/v2/token?refresh_token=${encodeURIComponent(
     refreshToken
   )}&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(
     clientSecret
-  )}&scope=${encodeURIComponent(scope)}&grant_type=refresh_token`;
+  )}&grant_type=refresh_token`;
 
   const res = await fetch(url, { method: 'POST' });
   const data = await res.json();
