@@ -90,14 +90,15 @@ You can combine them:
      }
    });
   ```
-4. **Example: `apiBaseUrl` + `customer` combined**
+4. **Example: `apiBaseUrl` + `customer` + `hideCustomerFields` combined**
   ```javascript
    window.TicketWidget.init({
      apiBaseUrl: 'https://your-api.example.com',
      customer: {
        name: 'User Name',
-       email: 'user@example.com'
-     }
+       email: 'user@example.com',
+     },
+     hideCustomerFields:true
    });
   ```
    Replace `name` and `email` with values from your own user/auth object. You can add `apiBaseUrl` if you use a custom     API. Add conditions, `useEffect`, or framework-specific logic as needed.
