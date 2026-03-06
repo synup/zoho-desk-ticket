@@ -28,6 +28,7 @@ Use this when you simply want the widget to appear and send tickets using the de
 
 - Uses the **default Zoho Desk connection** that is already configured.
 - No customer name/email is sent unless you choose one of the next options.
+- By default, the modal also shows **Name** and **Email** inputs so users can enter their details.
 
 ---
 
@@ -48,6 +49,7 @@ Supported query parameters:
 
 - `customerName` or `customer_name`
 - `customerEmail` or `customer_email`
+- `hideCustomerFields=true` (hides the Name/Email inputs in the modal)
 
 You can also point the widget to a different API base URL (for advanced setups):
 
@@ -62,7 +64,7 @@ You can combine them:
 
 ```html
 <script
-  src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?apiBaseUrl=https://your-api.example.com&customerName=Jane%20Doe&customerEmail=jane@example.com"
+  src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?apiBaseUrl=https://your-api.example.com&customerName=Jane%20Doe&customerEmail=jane@example.com&hideCustomerFields=true"
   defer
 ></script>
 ```
@@ -89,6 +91,8 @@ You can combine them:
    ```
 
    Replace `name` and `email` with values from your own user/auth object. You can add `apiBaseUrl` if you use a custom API. Add conditions, `useEffect`, or framework-specific logic as needed.
+   
+   If you want to hide the Name/Email inputs in the modal UI, pass `hideCustomerFields=true` via the script URL query parameter.
 
 ---
 

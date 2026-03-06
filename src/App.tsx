@@ -3,6 +3,7 @@ import type { TicketSuccessInfo } from './components/TicketModal';
 
 type WidgetConfig = {
   apiBaseUrl?: string;
+  hideCustomerFields?: boolean;
   customer?: {
     name?: string;
     email?: string;

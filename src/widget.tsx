@@ -9,7 +9,16 @@ import ticketModalCss from "./components/TicketModal.css?raw";
 
 const WIDGET_CSS = [indexCss, feedbackBubbleCss, ticketModalCss].join("\n");
 
-function getConfigFromScriptSrc(): any {
+type WidgetConfig = {
+  apiBaseUrl?: string;
+  hideCustomerFields?: boolean;
+  customer?: {
+    name?: string;
+    email?: string;
+  };
+};
+
+function getConfigFromScriptSrc(): WidgetConfig {
   try {
     const current = document.currentScript as HTMLScriptElement | null;
     const src = current?.src;
@@ -18,11 +27,16 @@ function getConfigFromScriptSrc(): any {
     const url = new URL(src, window.location.href);
     const params = url.searchParams;
 
-    const config: any = {};
+    const config: WidgetConfig = {};
 
     const apiBaseUrl = params.get("apiBaseUrl");
     if (apiBaseUrl) {
       config.apiBaseUrl = apiBaseUrl;
+    }
+
+    const hideCustomerFields = params.get("hideCustomerFields");
+    if (hideCustomerFields === "true" || hideCustomerFields === "1") {
+      config.hideCustomerFields = true;
     }
 
     const customerName =
@@ -42,12 +56,27 @@ function getConfigFromScriptSrc(): any {
   }
 }
 
-function mount(config: any = {}) {
-  if (document.getElementById("zoho-ticket-widget")) return;
+let currentConfig: WidgetConfig = {};
+let root: ReactDOM.Root | null = null;
+
+function ensureMounted() {
+  let container = document.getElementById("zoho-ticket-widget");
+  if (container) {
+    // Already mounted once; just re-render with latest config.
+    if (!root) {
+      const shadowRoot = (container as HTMLElement).shadowRoot;
+      if (!shadowRoot) return;
+      const mountPoint = shadowRoot.querySelector("div");
+      if (!mountPoint) return;
+      root = ReactDOM.createRoot(mountPoint as HTMLElement);
+    }
+    root.render(<App widgetConfig={currentConfig} />);
+    return;
+  }
 
   installGlobalLoggers();
 
-  const container = document.createElement("div");
+  container = document.createElement("div");
   container.id = "zoho-ticket-widget";
 
   const shadowRoot = container.attachShadow({ mode: "open" });
@@ -61,29 +90,36 @@ function mount(config: any = {}) {
 
   document.body.appendChild(container);
 
-  const root = ReactDOM.createRoot(mountPoint);
-  root.render(<App widgetConfig={config} />);
+  root = ReactDOM.createRoot(mountPoint);
+  root.render(<App widgetConfig={currentConfig} />);
 }
 
 const globalAny = window as any;
 
 let autoInitTimer: number | null = null;
-const scriptConfig = getConfigFromScriptSrc();
+currentConfig = getConfigFromScriptSrc();
 
 globalAny.TicketWidget = {
-  init(config: any = {}) {
-    if (globalAny.__TicketWidgetInitialized) return;
-    globalAny.__TicketWidgetInitialized = true;
-    if (autoInitTimer !== null) {
-      clearTimeout(autoInitTimer);
-      autoInitTimer = null;
+  init(config: WidgetConfig = {}) {
+    // Merge new config on top of whatever we already have (e.g. from script URL).
+    currentConfig = { ...currentConfig, ...config };
+
+    if (!globalAny.__TicketWidgetInitialized) {
+      globalAny.__TicketWidgetInitialized = true;
+      if (autoInitTimer !== null) {
+        clearTimeout(autoInitTimer);
+        autoInitTimer = null;
+      }
+      ensureMounted();
+    } else {
+      // Already auto-initialized or previously init'ed: re-render with new config.
+      ensureMounted();
     }
-    mount(config);
   },
 };
 
 autoInitTimer = window.setTimeout(() => {
   if (globalAny.__TicketWidgetInitialized) return;
   globalAny.__TicketWidgetInitialized = true;
-  mount(scriptConfig);
+  ensureMounted();
 }, 0);

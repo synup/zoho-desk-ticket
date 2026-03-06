@@ -4,6 +4,10 @@ import { installConsoleLogger } from '../utils/consoleLogger';
 import { submitTicket } from '../utils/submitTicket';
 import './TicketModal.css';
 
+function isLikelyEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export type TicketSuccessInfo = {
   ticketId: string;
   title: string;
@@ -24,6 +28,8 @@ type Props = {
 export function TicketModal({ open, onClose, onSuccess, config }: Props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [video, setVideo] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -35,6 +41,15 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
   useEffect(() => {
     if (open) installConsoleLogger();
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (config?.hideCustomerFields) return;
+    const initialName = config?.customer?.name ? String(config.customer.name) : '';
+    const initialEmail = config?.customer?.email ? String(config.customer.email) : '';
+    setCustomerName(initialName);
+    setCustomerEmail(initialEmail);
+  }, [open, config?.hideCustomerFields, config?.customer?.name, config?.customer?.email]);
 
   useEffect(() => {
     if (!open) return;
@@ -105,9 +120,25 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
       setError('Please enter a title');
       return;
     }
+    const email = customerEmail.trim();
+    if (!config?.hideCustomerFields && email && !isLikelyEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
     setError(null);
     setSubmitting(true);
     try {
+      const effectiveConfig = config?.hideCustomerFields
+        ? config
+        : {
+            ...config,
+            customer: {
+              ...(config?.customer || {}),
+              name: customerName.trim() || undefined,
+              email: email || undefined,
+            },
+          };
+
       const result = await submitTicket(
         {
           title: title.trim(),
@@ -115,7 +146,7 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
           images,
           video,
         },
-        config
+        effectiveConfig
       );
       if (result.success) {
         setSuccess(true);
@@ -133,6 +164,8 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
           setSuccess(false);
           setTitle('');
           setDescription('');
+          setCustomerName('');
+          setCustomerEmail('');
           setImages([]);
           setVideo(null);
           onClose();
@@ -145,7 +178,7 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
     } finally {
       setSubmitting(false);
     }
-  }, [title, description, images, video, onClose, onSuccess, config]);
+  }, [title, description, customerName, customerEmail, images, video, onClose, onSuccess, config]);
 
   const handleClose = useCallback(() => {
     if (!submitting) onClose();
@@ -191,6 +224,32 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
           )}
 
           <div className="ticket-form">
+            {!config?.hideCustomerFields && (
+              <>
+                <div className="ticket-field">
+                  <label htmlFor="ticket-customer-name">Name</label>
+                  <input
+                    id="ticket-customer-name"
+                    type="text"
+                    placeholder="Your name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    autoComplete="name"
+                  />
+                </div>
+                <div className="ticket-field">
+                  <label htmlFor="ticket-customer-email">Email</label>
+                  <input
+                    id="ticket-customer-email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    autoComplete="email"
+                  />
+                </div>
+              </>
+            )}
             <div className="ticket-field">
               <label htmlFor="ticket-title">Title <span>*</span></label>
               <input

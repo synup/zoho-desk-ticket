@@ -12,7 +12,13 @@
     <button onclick="simulateNetwork()">Make Network Call</button>
 
     <script src="./dist/ticket-widget.js"></script>
-
-   
+    <script>
+      // Example: point the widget at your local Zoho proxy
+      // (Zoho proxy running on http://localhost:3001)
+      window.TicketWidget && window.TicketWidget.init({
+        apiBaseUrl: "http://localhost:3001",
+        
+      });
+    </script>
   </body>
 </html>
