@@ -174,7 +174,13 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
         setError(result.message ?? 'Submission failed');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+      let msg = 'Something went wrong';
+      if (err instanceof Error) {
+        if (err.message === '[object Object]') msg = 'Something went wrong';
+        else if (err.name === 'TypeError' && err.message?.includes('fetch')) msg = 'Unable to reach the server. Please check your connection and try again.';
+        else msg = err.message;
+      }
+      setError(msg);
     } finally {
       setSubmitting(false);
     }

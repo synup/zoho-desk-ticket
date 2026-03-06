@@ -74,7 +74,17 @@ async function submitToZohoDesk(
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     console.error('[SubmitTicket] Error response', { status: res.status, statusText: res.statusText, body: data });
-    throw new Error(data.error || res.statusText || 'Failed to create ticket');
+    let msg = 'Failed to create ticket';
+    if (data?.error) {
+      if (typeof data.error === 'string') {
+        msg = data.error;
+      } else if (data.error?.message && typeof data.error.message === 'string') {
+        msg = data.error.message;
+      }
+    } else if (res.statusText) {
+      msg = res.statusText;
+    }
+    throw new Error(msg);
   }
   const ticketId = data.ticketId;
   if (!ticketId) {
