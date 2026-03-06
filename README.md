@@ -16,7 +16,7 @@ Works in **any frontend**: React, Vue, Angular, plain HTML, or any framework. On
 
 ---
 
-## Widget options 
+## Widget options
 
 ### Option 1 – Just the script tag (no settings)
 
@@ -74,25 +74,34 @@ You can combine them:
 ### Option 3 – Use JavaScript (React, Vue, Angular, or any app)
 
 1. **Add the script once** in your main HTML (e.g. `public/index.html`):
-
-   ```html
+  ```html
    <script src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js" defer></script>
-   ```
-
-2. **Call `TicketWidget.init` from your app** when you're ready (e.g. after login or in your root component):
-
-   ```javascript
+  ```
+2. **Example: hide the Name/Email input fields in Modal**
+  ```html
+   <script src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?hideCustomerFields=true" defer></script>
+  ```
+3. **Call `TicketWidget.init` from your app** when you're ready (e.g. after login or in your root component):
+  ```javascript
    window.TicketWidget.init({
      customer: {
        name: 'User Name',   // from your app
        email: 'user@example.com'
      }
    });
-   ```
-
-   Replace `name` and `email` with values from your own user/auth object. You can add `apiBaseUrl` if you use a custom API. Add conditions, `useEffect`, or framework-specific logic as needed.
-   
-   If you want to hide the Name/Email inputs in the modal UI, pass `hideCustomerFields=true` via the script URL query parameter.
+  ```
+4. **Example: `apiBaseUrl` + `customer` combined**
+  ```javascript
+   window.TicketWidget.init({
+     apiBaseUrl: 'https://your-api.example.com',
+     customer: {
+       name: 'User Name',
+       email: 'user@example.com'
+     }
+   });
+  ```
+   Replace `name` and `email` with values from your own user/auth object. You can add `apiBaseUrl` if you use a custom     API. Add conditions, `useEffect`, or framework-specific logic as needed.
+   If you want to hide the Name/Email inputs in the modal UI, pass `hideCustomerFields=true` via the script URL query parameter (example above).
 
 ---
 
