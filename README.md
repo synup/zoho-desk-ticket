@@ -6,6 +6,17 @@ Works in **any frontend**: React, Vue, Angular, plain HTML, or any framework. On
 
 ---
 
+## Script URLs (staging vs production)
+
+| Environment | URL | When to use |
+|-------------|-----|-------------|
+| **Production** (public) | `https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js` | **Live sites and public apps** – use this in production. |
+| **Staging** | `https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/c3RhZ2luZw%3D%3D/ticket-widget.js` | Internal/testing only – not for end users. |
+
+All examples below use the **production** URL. Swap in the staging URL only when you need to test against staging.
+
+---
+
 ## What you get
 
 - **Floating bubble** – Fixed bottom-right; opens a modal on click.
@@ -23,7 +34,7 @@ Works in **any frontend**: React, Vue, Angular, plain HTML, or any framework. On
 Use this when you simply want the widget to appear and send tickets using the default Zoho Desk connection.
 
 ```html
-<script src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js" defer></script>
+<script src="https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js" defer></script>
 ```
 
 - Uses the **default Zoho Desk connection** that is already configured.
@@ -40,7 +51,7 @@ You can send the customer’s name and email like this:
 
 ```html
 <script
-  src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?customerName=Jane%20Doe&customerEmail=jane@example.com"
+  src="https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js?customerName=Jane%20Doe&customerEmail=jane@example.com"
   defer
 ></script>
 ```
@@ -55,7 +66,7 @@ You can also point the widget to a different API base URL (for advanced setups):
 
 ```html
 <script
-  src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?apiBaseUrl=https://your-api.example.com"
+  src="https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js?apiBaseUrl=https://your-api.example.com"
   defer
 ></script>
 ```
@@ -64,7 +75,7 @@ You can combine them:
 
 ```html
 <script
-  src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?apiBaseUrl=https://your-api.example.com&customerName=Jane%20Doe&customerEmail=jane@example.com&hideCustomerFields=true"
+  src="https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js?apiBaseUrl=https://your-api.example.com&customerName=Jane%20Doe&customerEmail=jane@example.com&hideCustomerFields=true"
   defer
 ></script>
 ```
@@ -75,11 +86,11 @@ You can combine them:
 
 1. **Add the script once** in your main HTML (e.g. `public/index.html`):
   ```html
-   <script src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js" defer></script>
+   <script src="https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js" defer></script>
   ```
 2. **Example: hide the Name/Email input fields in Modal**
   ```html
-   <script src="https://zoho-desk.dev5-1.stg.synup.com/ticket-widget.js?hideCustomerFields=true" defer></script>
+   <script src="https://verifymybiz-cdn.s3.us-west-2.amazonaws.com/dGlja2V0LW1hbmFnZXI%3D/cHJvZHVjdGlvbg%3D%3D/ticket-widget.js?hideCustomerFields=true" defer></script>
   ```
 3. **Call `TicketWidget.init` from your app** when you're ready (e.g. after login or in your root component):
   ```javascript
