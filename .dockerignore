@@ -15,12 +15,5 @@ npm-debug.log*
 .idea
 .DS_Store
 
-# Frontend source (not needed — only public/ticket-widget.js is served)
-src/
-index.html
-package.json
-package-lock.json
+# Frontend artifacts not needed in final image (but included for build stage)
 .npmrc
-tsconfig*.json
-vite.config.ts
-eslint.config.js
