@@ -88,6 +88,13 @@ function ensureMounted() {
   const mountPoint = document.createElement("div");
   shadowRoot.appendChild(mountPoint);
 
+  // Stop keyboard events from propagating to the host app so its global
+  // shortcut listeners (e.g. "g h" → Go Home) don't fire while the user
+  // is typing inside the widget (DS-1707).
+  (["keydown", "keyup", "keypress"] as const).forEach((eventType) => {
+    container!.addEventListener(eventType, (e) => e.stopPropagation(), true);
+  });
+
   document.body.appendChild(container);
 
   root = ReactDOM.createRoot(mountPoint);
