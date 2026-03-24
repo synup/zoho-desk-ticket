@@ -202,7 +202,7 @@ export function TicketModal({ open, onClose, onSuccess, config }: Props) {
     >
       <div className="ticket-modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="ticket-modal-header">
-          <h2 id="ticket-modal-title" className="ticket-modal-title">Report an Issue</h2>
+          <h2 id="ticket-modal-title" className="ticket-modal-title">Report an Issue (staging)</h2>
           <button
             type="button"
             className="ticket-modal-close"
