@@ -13,7 +13,7 @@ import { getErrorLogs } from './errorLogger';
 import { getEnvironmentInfo } from './environmentLogger';
 
 function getApiBase(config?: any) {
-  return config?.apiBaseUrl || import.meta.env.VITE_ZOHO_API_BASE || 'https://zoho-desk-api.dev5-1.stg.synup.com';
+  return config?.apiBaseUrl || import.meta.env.VITE_ZOHO_API_BASE || 'https://zoho-desk-api.synup.com';
 }
 
 export type TicketPayload = {
